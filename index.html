@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>chat-recipe</title>
+    <link rel="stylesheet" href="common.html" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <!-- ブラウザの画面に見える内容 -->
+    <header>
+      <div class="head">
+        <h2>chat-recipe</h2>
+      </div>
+    </header>
+    <div class="container">
+      <div class="chat-area"></div>
+      <div class="message-area">
+        <div class="message-area-text">
+          <p>料理名 / name</p>
+          <textarea name="" id="name" cols="30" rows="10"></textarea>
+          <p>材料 / ingredients</p>
+          <textarea name="" id="text" cols="30" rows="10"></textarea>
+          <p>レシピ / recipe</p>
+          <textarea name="" id="recipe" cols="30" rows="10"></textarea>
+          <div class="message-area-button">
+            <button id="send" class="disabled-button">送信</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ブラウザ画面 -->
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!--** 以下Firebase **-->
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase.js"></script>
+
+    <script>
+      var firebaseConfig = {
+        apiKey: "",
+        authDomain: "",
+        projectId: "",
+        storageBucket: "",
+        messagingSenderId: "",
+        appId: "",
+        databaseURL: "",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+
+      //firebaseのデーターベース
+      let newPostRef = firebase.database().ref();
+
+      // ここから下にjqueryの処理
+      // 送信ボタンをクリック処理
+      $("#send").on("click", function () {
+        newPostRef.push({
+          name: $("#name").val(),
+          text: $("#text").val(),
+          recipe: $("#recipe").val(),
+        });
+
+        $("#name").val("");
+        $("#text").val("");
+        $("#recipe").val("");
+      });
+
+      newPostRef.on("child_added", function (data) {
+        let a = data.val();
+        let str = `<div class= "chat-common">
+              <div class = "chat-name">${a.name}</div>
+              <br>
+            <div class = "chat-text">${a.text}</div>
+            <br>
+            <div class = "chat-recipe">${a.recipe}</div>
+            </div>`;
+
+        $(".chat-area").prepend(str);
+      });
+    </script>
+  </body>
+</html>
